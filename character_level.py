@@ -1,6 +1,7 @@
 import requests
 import re
 
+from lxml.html import fromstring
 from simple_settings import LazySettings
 from telegram.ext import Updater, CommandHandler
 
@@ -50,19 +51,25 @@ class TibiaLevelInfo:
             })
 
         response = requests.post('https://www.demolidores.com.br/', headers=headers, params=settings.params, data=request_data)
-        return self._prepare_request(response)
+        return self._prepare_message(response)
 
-    def _prepare_request(self, response):
-        try:
-            info = re.findall(r'- Level ([\d]+)', response.text)
-            if len(info) == 2:
-                return settings.MAIN_ACCOUNT_CHAR_ONE + info[0] + '\n' + settings.MAIN_ACCOUNT_CHAR_TWO + info[1]
-            else:
-                return settings.MAKER_ACCOUNT_CHAR_ONE + info[0]
+    def _get_characters_name(self, response):
+        response = fromstring(response.text)
+        return response.xpath('//td[contains(@id,"CharacterCell2_")]/span/span/text()')
 
-        except IndexError:
-            return f'Tem que pegar os cookies novamente no site!'
+    def _get_characters_info(self, response):
+        response = fromstring(response.text)
+        return response.xpath('//td[contains(@id,"CharacterCell2_")]/span/span/small/text()')
 
+    def _prepare_message(self, response):
+        characters_name = self._get_characters_name(response)
+        characters_info = self._get_characters_info(response)
+
+        message = ''
+
+        for i in range(0, len(characters_name)):
+            message = message +  characters_name[i] + ' - ' + characters_info[i] + '\n'
+        return message
 
 if __name__ == '__main__':
     tibia_info = TibiaLevelInfo()
