@@ -12,12 +12,6 @@ PASSWORD_MAKER = ''
 
 BOT_TOKEN = ''
 
-MAIN_ACCOUNT_CHAR_ONE = ''
-MAIN_ACCOUNT_CHAR_TWO = ''
-
-MAKER_ACCOUNT_CHAR_ONE = ''
-
-
 base_header = {
             'authority': 'www.demolidores.com.br',
             'cache-control': 'max-age=0',
