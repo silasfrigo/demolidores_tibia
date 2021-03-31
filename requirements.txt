@@ -2,4 +2,4 @@ requests
 python-telegram-bot
 simple-settings==0.19.1
 ipdb
-lxml==4.6.2
+lxml==4.6.3
